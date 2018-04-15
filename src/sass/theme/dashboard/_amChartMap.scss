@@ -1,4 +1,9 @@
 #amChartMap {
   width: 100%;
-  height: 315px;
+  height: calc(100vh - 120px);
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
 }

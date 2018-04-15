@@ -1,4 +1,9 @@
 #google-maps {
   width: 100%;
+  height: calc(100vh - 120px);
+}
+
+#google-maps-orig {
+  width: 100%;
   height: calc(100vh - 283px);
 }
