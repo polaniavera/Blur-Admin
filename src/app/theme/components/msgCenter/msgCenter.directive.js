@@ -13,7 +13,8 @@
     return {
       restrict: 'E',
       templateUrl: 'app/theme/components/msgCenter/msgCenter.html',
-      controller: 'MsgCenterCtrl'
+      controller: 'MsgCenterCtrl',
+      authenticate: false
     };
   }
 

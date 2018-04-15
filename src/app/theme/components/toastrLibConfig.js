@@ -18,7 +18,7 @@
       containerId: 'toast-container',
       maxOpened: 0,
       newestOnTop: true,
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-top-center',
       preventDuplicates: false,
       preventOpenDuplicates: false,
       target: 'body'

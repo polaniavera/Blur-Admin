@@ -1,112 +1,132 @@
 /**
- * @author v.lugovksy
- * created on 16.12.2015
+ * @author c.polania
+ * created on 23.07.2017
  */
 (function () {
   'use strict';
 
-  angular.module('BlurAdmin.theme.components')
-      .controller('MsgCenterCtrl', MsgCenterCtrl);
+    angular.module('BlurAdmin.theme.components')
+        .controller('MsgCenterCtrl', MsgCenterCtrl);
 
-  /** @ngInject */
-  function MsgCenterCtrl($scope, $sce) {
-    $scope.users = {
-      0: {
-        name: 'Vlad',
-      },
-      1: {
-        name: 'Kostya',
-      },
-      2: {
-        name: 'Andrey',
-      },
-      3: {
-        name: 'Nasta',
-      }
-    };
+    /** @ngInject */
+    function MsgCenterCtrl($http, $timeout, $scope, $rootScope, $state, globalFactory, dataFactory) {
+        function initialize() {
 
-    $scope.notifications = [
-      {
-        userId: 0,
-        template: '&name posted a new article.',
-        time: '1 min ago'
-      },
-      {
-        userId: 1,
-        template: '&name changed his contact information.',
-        time: '2 hrs ago'
-      },
-      {
-        image: 'assets/img/shopping-cart.svg',
-        template: 'New orders received.',
-        time: '5 hrs ago'
-      },
-      {
-        userId: 2,
-        template: '&name replied to your comment.',
-        time: '1 day ago'
-      },
-      {
-        userId: 3,
-        template: 'Today is &name\'s birthday.',
-        time: '2 days ago'
-      },
-      {
-        image: 'assets/img/comments.svg',
-        template: 'New comments on your post.',
-        time: '3 days ago'
-      },
-      {
-        userId: 1,
-        template: '&name invited you to join the event.',
-        time: '1 week ago'
-      }
-    ];
+            $scope.vehiculos;
+            getItems();
 
-    $scope.messages = [
-      {
-        userId: 3,
-        text: 'After you get up and running, you can place Font Awesome icons just about...',
-        time: '1 min ago'
-      },
-      {
-        userId: 0,
-        text: 'You asked, Font Awesome delivers with 40 shiny new icons in version 4.2.',
-        time: '2 hrs ago'
-      },
-      {
-        userId: 1,
-        text: 'Want to request new icons? Here\'s how. Need vectors or want to use on the...',
-        time: '10 hrs ago'
-      },
-      {
-        userId: 2,
-        text: 'Explore your passions and discover new ones by getting involved. Stretch your...',
-        time: '1 day ago'
-      },
-      {
-        userId: 3,
-        text: 'Get to know who we are - from the inside out. From our history and culture, to the...',
-        time: '1 day ago'
-      },
-      {
-        userId: 1,
-        text: 'Need some support to reach your goals? Apply for scholarships across a variety of...',
-        time: '2 days ago'
-      },
-      {
-        userId: 0,
-        text: 'Wrap the dropdown\'s trigger and the dropdown menu within .dropdown, or...',
-        time: '1 week ago'
-      }
-    ];
+            //Obtiene los items para poblar la lista
+            function getItems() {
+                dataFactory.getItemsByUser()
+                    .then(function (response) {
+                        globalFactory.setVehiculos(response);
+                        $scope.vehiculos = globalFactory.getVehiculos();
+                    }, function (error) {
+                        $scope.status = 'Unable to load customer data: ' + error.message;
+                    });
+            }
 
-    $scope.getMessage = function(msg) {
-      var text = msg.template;
-      if (msg.userId || msg.userId === 0) {
-        text = text.replace('&name', '<strong>' + $scope.users[msg.userId].name + '</strong>');
-      }
-      return $sce.trustAsHtml(text);
-    };
-  }
+            //Rutina para almacenamiento de fecha en variable global
+            $scope.dateLabel = globalFactory.getDate();
+            $scope.itemSelected = globalFactory.getItem();
+
+            //seleccion item
+            $scope.selectItem = function (item) {
+                globalFactory.setItem(item.IdItem);
+                globalFactory.setFromMsg(true);
+                $scope.placa = item.Placa;
+            };
+
+            //seleccion fecha
+            $scope.select = function (date) {
+                globalFactory.setDate(formatDate(date));
+                globalFactory.setFromMsg(true);
+            };
+
+            //Rutina para enviar al controlador segun la pagina
+            $scope.search = function () {
+                console.log('item ' + globalFactory.getItem());
+                console.log(globalFactory.getDate() + ' - ' + globalFactory.getFinalDate() + ' - ' + globalFactory.getItem());
+                if ($state.current.title == "Mapas") {
+                    $rootScope.$broadcast('mapRangeClick');
+                } if ($state.current.title == "Graficas") {
+                    $rootScope.$broadcast('chartRangeClick');
+                } else if ($state.current.title == "Reportes") {
+                    $rootScope.$broadcast('tableClick');
+                }
+            };
+
+            //Rutina que se ejecuta luego de la llamada al servicio y presentacion de datos
+            $scope.$on('postService', function (event) {
+                if (globalFactory.getExistData()) {
+                    $scope.dateLabel = globalFactory.getDate();
+                    $scope.itemSelected = globalFactory.getItem();
+                } else {
+                    var fecha = new Date(globalFactory.getDate());
+                    $scope.selectedDate = fecha.setDate(fecha.getDate() + 1);
+                }
+            });
+
+
+            $scope.dtpOptions = {
+                showWeeks: false
+            };
+
+            //Rutina para abrir el calendario
+            $scope.open = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.opened = true;
+            };
+
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 dias': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 dias': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Mes Anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, cb);
+
+            cb(start, end);
+
+            $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+                //do something, like clearing an input
+                globalFactory.setDate(picker.startDate.format('YYYY-MM-DD'));
+                globalFactory.setFinalDate(picker.endDate.format('YYYY-MM-DD'));
+                globalFactory.setFromMsg(true);
+            });
+
+        }
+            
+        $timeout(function () {
+            initialize();
+        }, 10);
+
+    }
+
+    //Formatea de un string a date
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
 })();

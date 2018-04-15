@@ -1,7 +1,18 @@
-<div class="widgets">
-
+<!--<div class="widgets">
   <div class="row">
-    <div class="col-md-12" ui-view autoscroll="true" autoscroll-body-top></div>
+    <div class="col-md-12" ui-view autoscroll="true" autoscroll-body-top>
+    </div>
   </div>
+</div>-->
 
+<div class="row">
+  <div class="col-lg-8 col-md-8 col-sm-12">
+      <google-maps></google-maps>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-12"
+       ba-panel
+       ba-panel-title="Informacion"{{globalFactory.getVehiculos()[0].Placa;}}
+       ba-panel-class="extra-medium-panel">
+      <info-maps></info-maps>
+  </div>
 </div>
