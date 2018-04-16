@@ -1,44 +1,47 @@
 <div>
-  <!-- <button ng-click="downloadFile()">Download</button> -->
   <div class="button-wrapper"><button type="button" class="btn btn-success btn-raised" ng-click="downloadFile()">Descargar Reporte</button></div>
 </div>
 
 <div class="horizontal-scroll">
-  <div class="form-group select-page-size-wrap ">
-    <!-- <label>Rows on page -->
-      <select class="form-control selectpicker show-tick" title="Rows on page" selectpicker
-              ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
-      </select>
-    </label>
-  </div>
   <table class="table" st-table="smartTableData">
     <thead>
-    <tr class="sortable">
-      <!--<th class="table-id" st-sort="id" st-sort-default="true">#</th>-->
-      <th st-sort="Hora" st-sort-default="true">Hora</th>
-      <th st-sort="lat">Latitud</th>
-      <th st-sort="lng">Longitud</th>
-      <th st-sort="TanqueConductor">Nivel Conductor</th>
-      <th st-sort="TanquePasajero">Nivel Pasajero</th>
-      <th st-sort="nivelTotal">Nivel Total</th>
-      <th st-sort="Velocidad">Velocidad</th>
+    <tr class="sortable ">
+        <th class="table-id" st-sort="id" st-sort-default="true">#</th>
+        <th st-sort="Hora">Hora</th>
+        <th st-sort="lat">Latitud</th>
+        <th st-sort="lng">Longitud</th>
+        <th st-sort="TanqueConductor">Nivel Conductor</th>
+        <th st-sort="TanquePasajero">Nivel Pasajero</th>
+        <th st-sort="nivelTotal">Nivel Total</th>
+        <th st-sort="Velocidad">Velocidad</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th><input st-search="Hora" placeholder="Filtro" class="input-sm form-control search-input" type="search" style='width:80px !important;'/></th>
+      <th></th>
+      <th></th>
+      <th><input st-search="TanqueConductor" placeholder="Filtro" class="input-sm form-control search-input" type="search" style='width:110px !important;'/></th>
+      <th><input st-search="TanquePasajero" placeholder="Filtro" class="input-sm form-control search-input" type="search" style='width:110px !important;'/></th>
+      <th><input st-search="nivelTotal" placeholder="Filtro" class="input-sm form-control search-input" type="search" style='width:110px !important;'/></th>
+      <th><input st-search="Velocidad" placeholder="filtro" class="input-sm form-control search-input" type="search" style='width:110px !important;'/></th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="item in smartTableData">
-      <td>{{item.Hora}}</td>
-      <td>{{item.lat}}</td>
-      <td>{{item.lng}}</td>
-      <td>{{item.TanqueConductor}}</td>
-      <td>{{item.TanquePasajero}}</td>
-      <td>{{item.nivelTotal}}</td>
-      <td>{{item.Velocidad}}</td>
+        <td class="table-id">{{item.id}}</td>
+        <td>{{item.Hora}}</td>
+        <td>{{item.lat}}</td>
+        <td>{{item.lng}}</td>
+        <td>{{item.TanqueConductor}}</td>
+        <td>{{item.TanquePasajero}}</td>
+        <td>{{item.nivelTotal}}</td>
+        <td>{{item.Velocidad}}</td>
     </tr>
     </tbody>
     <tfoot>
     <tr>
-      <td colspan="6" class="text-center">
-        <div st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="20"></div>
+      <td colspan="8" class="text-center">
+        <div st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="10"></div>
       </td>
     </tr>
     </tfoot>

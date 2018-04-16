@@ -37,6 +37,7 @@
             var promise = defered.promise;
             $http.get(constantes.urlGetByItem + globalFactory.getItem() + '/' + globalFactory.getDate())
             .success(function (data) {
+                console.log(data);
                 globalFactory.setExistData(true);
                 defered.resolve(data);
             })
