@@ -3,7 +3,7 @@
 </div>
 
 <div class="horizontal-scroll">
-  <table class="table" st-table="smartTableData">
+  <table class="table table-striped" st-table="displayedCollection" st-safe-src="smartTableData">
     <thead>
     <tr class="sortable ">
         <th class="table-id" st-sort="id" st-sort-default="true">#</th>
@@ -27,7 +27,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="item in smartTableData">
+    <tr ng-repeat="item in displayedCollection">
         <td class="table-id">{{item.id}}</td>
         <td>{{item.Hora}}</td>
         <td>{{item.lat}}</td>
